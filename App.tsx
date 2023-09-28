@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Button, Image} from 'react-native';
+import {StyleSheet, Text, View, Button, Dimensions} from 'react-native';
 import {Settings} from 'react-native-fbsdk-next';
 import {
   GoogleSignin,
@@ -8,13 +8,27 @@ import {
   User as GoogleUser,
 } from '@react-native-google-signin/google-signin';
 import {LoginButton, AccessToken} from 'react-native-fbsdk-next';
+import Video from 'react-native-video';
+import TrackPlayer from 'react-native-track-player';
+
+const track1 = [
+  {
+    url: require('./src/assets/audio/SoundHelix-Song-1.mp3'),
+    title: 'Test',
+  },
+];
 
 const App: React.FC = () => {
   const [userInfo, setUserInfo] = useState<GoogleUser | null>(null);
 
   useEffect(() => {
     GoogleSignin.configure({
-      iosClientId: 'YOUR_IOS_CLIENT_ID',
+      iosClientId:
+        '917934707278-d336s8kh3ntusaqf8rnihar459a16n35.apps.googleusercontent.com',
+    });
+
+    TrackPlayer.setupPlayer().then(async () => {
+      await TrackPlayer.add(track1);
     });
   }, []);
 
@@ -48,26 +62,35 @@ const App: React.FC = () => {
       console.error(error);
     }
   };
-  Settings.setAppID('APP ID');
-  Settings.initializeSDK();
+
+  const videoURL = 'https://www.w3schools.com/html/mov_bbb.mp4';
+  const screenWidth = Dimensions.get('screen').width;
+
+  const playTrack = async () => {
+    await TrackPlayer.play();
+  };
+
+  const pauseTrack = async () => {
+    await TrackPlayer.pause();
+  };
+
   return (
     <View style={styles.container}>
       {userInfo ? (
         <>
-          <View>
-            <Text>Name: {userInfo.user.name}</Text>
-            <Text>Email: {userInfo.user.email}</Text>
+          <Video
+            source={{uri: videoURL}}
+            style={{width: screenWidth, height: screenWidth / 2}}
+            resizeMode="cover"
+            controls
+            disableFocus
+            audioOnly
+            currentTime={0}
+          />
 
-            <View>
-              {userInfo.user.photo && (
-                <Image
-                  source={{uri: userInfo.user.photo}}
-                  style={{width: 100, height: 100}}
-                />
-              )}
-            </View>
-          </View>
           <Button title="Sign Out" onPress={signOut} />
+          <Button title="Play-Audio" onPress={playTrack} />
+          <Button title="Pause-Audio" onPress={pauseTrack} />
         </>
       ) : (
         <>

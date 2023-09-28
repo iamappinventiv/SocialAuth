@@ -82,5 +82,7 @@
   <string>fbapi</string>
   <string>fb-messenger-share-api</string>
 </array>
+<key>NSMicrophoneUsageDescription</key>
+<string>This sample uses the microphone to record your speech and convert it to text.</string>
 </dict>
 </plist>
